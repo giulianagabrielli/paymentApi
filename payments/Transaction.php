@@ -15,7 +15,7 @@
             $connection = parent::connect();
 
             //Create query
-            $query = $connection->prepare('INSERT INTO boleto (clientId, name, email, cpf, amount, type) VALUES (:clientId, :name, :email, :cpf, :amount, :type)');
+            $query = $connection->prepare('INSERT INTO transactions (clientId, name, email, cpf, amount, type) VALUES (:clientId, :name, :email, :cpf, :amount, :type)');
 
             //Binding
             $query->bindValue(':clientId', htmlspecialchars(strip_tags($this->clientId)));
@@ -41,7 +41,7 @@
             $connection = parent::connect();
 
             //Create query
-            $query = $connection->prepare('INSERT INTO creditcard (clientId, name, email, cpf, amount, type, cardHolderName, cardNumber, cardExpDate, cardCvv) VALUES (:clientId, :name, :email, :cpf, :amount, :type, :cardHolderName, :cardNumber, :cardExpDate, :cardCvv)');
+            $query = $connection->prepare('INSERT INTO transactions (clientId, name, email, cpf, amount, type, cardHolderName, cardNumber, cardExpDate, cardCvv) VALUES (:clientId, :name, :email, :cpf, :amount, :type, :cardHolderName, :cardNumber, :cardExpDate, :cardCvv)');
 
             //Binding
             $query->bindValue(':clientId', htmlspecialchars(strip_tags($this->clientId)));
@@ -64,70 +64,52 @@
             }
         }
 
-        public function findBoletoPayment(){ 
+        public function findPayment(){ 
 
             //Connecting DB
             $connection = parent::connect();
 
             //Create query
-            $query = $connection->prepare('SELECT * FROM boleto WHERE clientId=:clientId');
+            $query = $connection->prepare('SELECT * FROM transactions WHERE clientId=:clientId');
 
             //Binding
             $query->bindValue(':clientId', htmlspecialchars(strip_tags($this->clientId)));
 
             $query->execute();
 
-            //Array info
-            $arrayBoleto = $query->fetch(PDO::FETCH_ASSOC);
-            $this->buyer = [
-                "name" => $arrayBoleto['name'], 
-                "email" => $arrayBoleto['email'], 
-                "cpf" => $arrayBoleto['cpf']
-            ];
-            $this->payment = [
-                "type" => $arrayBoleto['type'], 
-                "amount" => $arrayBoleto['amount']
-            ];
+            //Array with data from db
+            $arrayData = $query->fetch(PDO::FETCH_ASSOC);
+
+            if($arrayData['type'] == "boleto"){
+
+                $this->buyer = [
+                    "name" => $arrayData['name'], 
+                    "email" => $arrayData['email'], 
+                    "cpf" => $arrayData['cpf']
+                ];
+                $this->payment = [
+                    "type" => $arrayData['type'], 
+                    "amount" => $arrayData['amount']
+                ];
+            } else {
+                $this->buyer = [
+                    "name" => $arrayData['name'], 
+                    "email" => $arrayData['email'], 
+                    "cpf" => $arrayData['cpf']
+                ];
+                $this->payment = [
+                    "type" => $arrayData['type'], 
+                    "amount" => $arrayData['amount']
+                ];
+                $this->creditCard = [
+                    "cardHolderName" => $arrayData['cardHolderName'], 
+                    "cardNumber" => $arrayData['cardNumber'], 
+                    "cardExpDate" => $arrayData['cardExpDate'], 
+                    "cardCvv" => $arrayData['cardCvv']
+                ];
+            }
     
         }
-
-        public function findCreditCardPayment(){ 
-
-            //Connecting DB
-            $connection = parent::connect();
-
-            //Create query
-            $query = $connection->prepare('SELECT * FROM creditcard WHERE clientId=:clientId');
-
-            //Binding
-            $query->bindValue(':clientId', htmlspecialchars(strip_tags($this->clientId)));
-
-            $query->execute();
-            // return $query;
-
-            //Array info
-            $arrayCreditCard = $query->fetch(PDO::FETCH_ASSOC);
-            $this->buyer = [
-                "name" => $arrayCreditCard['name'], 
-                "email" => $arrayCreditCard['email'], 
-                "cpf" => $arrayCreditCard['cpf']
-            ];
-            $this->payment = [
-                "type" => $arrayCreditCard['type'], 
-                "amount" => $arrayCreditCard['amount']
-            ];
-            $this->creditCard = [
-                "cardHolderName" => $arrayCreditCard['cardHolderName'], 
-                "cardNumber" => $arrayCreditCard['cardNumber'], 
-                "cardExpDate" => $arrayCreditCard['cardExpDate'], 
-                "cardCvv" => $arrayCreditCard['cardCvv']
-            ];
-    
-        }
-
-
-
-
 
 
     }

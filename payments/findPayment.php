@@ -19,12 +19,9 @@
     $transaction = new Transaction();
     $transaction->clientId = isset($_GET['clientId']) ? $_GET['clientId'] : die();
 
-    //boleto or credit card
-    if($transaction->payment = ["type" => "boleto"]){
-        //boleto
-        $transaction->findBoletoPayment(); 
+    $transaction->findPayment(); 
         
-        if($transaction){  
+        if($transaction->payment['type'] == "boleto"){  
     
             $transaction_arr = array(
                 'clientId' => $transaction->clientId,
@@ -43,23 +40,8 @@
             //turn to json
             echo json_encode($transaction_arr);
     
-        } else { 
-            echo json_encode(
-                array('message'=> 'No payment found')
-            );
-        }
+        } elseif ($transaction->payment['type'] == "credit card") {
 
-
-
-    } elseif ($transaction->payment = ["type" => "credit card"]) {
-        //new Credit Card Payment
-        // $transaction = new Transaction();
-    
-        // $transaction->clientId = isset($_GET['clientId']) ? $_GET['clientId'] : die();
-        $transaction->findCreditCardPayment(); 
-        
-        if($transaction){  
-    
             $transaction_arr = array(
                 'clientId' => $transaction->clientId,
                 'buyer'=> [
@@ -76,23 +58,18 @@
                     'cardExpDate' => $transaction->creditCard['cardExpDate'], 
                     'cardCvv' => $transaction->creditCard['cardCvv']
                 ],
-                'transaction' => "Transaction Successful!"
+                'status' => "Authorized"
             );
     
             //turn to json
             echo json_encode($transaction_arr);
-    
-        } else { 
+        } else {
             echo json_encode(
-                array('message'=> 'No payment found')
+                array('message'=> 'No client id found')
             );
+
         }
 
-
-    } else {
-        echo json_encode(
-            array('message'=> 'No payment found')
-        );
-    }
+    
     
 
