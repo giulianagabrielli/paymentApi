@@ -9,23 +9,23 @@
 
     //Include
     include_once "../database/Database.php";
-    include_once "Payment.php";
+    include_once "Transaction.php";
 
     //new DB
     $database = new Database();
     $connection = $database->connect();
 
     //new Payment
-    $payment = new Payment();
+    $transaction = new Transaction();
 
     //Data from request
     $data = json_decode(file_get_contents("php://input"));
-    $payment->clientId = $data->clientId;
-    $payment->buyer = $data->buyer;
-    $payment->amount = $data->amount;
+    $transaction->clientId = $data->clientId;
+    $transaction->buyer = $data->buyer; 
+    $transaction->payment = $data->payment; 
 
     //Register
-    if($payment->createBoletoPayment()){
+    if($transaction->createBoletoPayment()){
         echo json_encode(
             array('message'=> 'Payment registered')
         );
