@@ -76,15 +76,20 @@
             $query->bindValue(':clientId', htmlspecialchars(strip_tags($this->clientId)));
 
             $query->execute();
-            // return $query;
 
-            $arrayPayment = $query->fetch(PDO::FETCH_ASSOC);
-           
-            $this->buyer = ["name" => $arrayPayment['name'], "email" => $arrayPayment['email'], "cpf" => $arrayPayment['cpf']];
-            $this->payment = ["type" => $arrayPayment['type'], "amount" => $arrayPayment['amount']];
+            //Array info
+            $arrayBoleto = $query->fetch(PDO::FETCH_ASSOC);
+            $this->buyer = [
+                "name" => $arrayBoleto['name'], 
+                "email" => $arrayBoleto['email'], 
+                "cpf" => $arrayBoleto['cpf']
+            ];
+            $this->payment = [
+                "type" => $arrayBoleto['type'], 
+                "amount" => $arrayBoleto['amount']
+            ];
     
         }
-
 
         public function findCreditCardPayment(){ 
 
@@ -100,11 +105,23 @@
             $query->execute();
             // return $query;
 
-            $arrayPayment = $query->fetch(PDO::FETCH_ASSOC);
-           
-            $this->buyer = ["name" => $arrayPayment['name'], "email" => $arrayPayment['email'], "cpf" => $arrayPayment['cpf']];
-            $this->payment = ["type" => $arrayPayment['type'], "amount" => $arrayPayment['amount']];
-            $this->credirCard = ["cardHolderName" => $arrayPayment['cardHolderName'], "cardNumber" => $arrayPayment['cardNumber'], "cardExpDate" => $arrayPayment['cardExpDate'], "cardCvv" => $arrayPayment['cardCvv'],];
+            //Array info
+            $arrayCreditCard = $query->fetch(PDO::FETCH_ASSOC);
+            $this->buyer = [
+                "name" => $arrayCreditCard['name'], 
+                "email" => $arrayCreditCard['email'], 
+                "cpf" => $arrayCreditCard['cpf']
+            ];
+            $this->payment = [
+                "type" => $arrayCreditCard['type'], 
+                "amount" => $arrayCreditCard['amount']
+            ];
+            $this->creditCard = [
+                "cardHolderName" => $arrayCreditCard['cardHolderName'], 
+                "cardNumber" => $arrayCreditCard['cardNumber'], 
+                "cardExpDate" => $arrayCreditCard['cardExpDate'], 
+                "cardCvv" => $arrayCreditCard['cardCvv']
+            ];
     
         }
 

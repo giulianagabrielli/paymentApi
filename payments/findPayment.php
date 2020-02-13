@@ -17,10 +17,10 @@
 
     //new Payment
     $transaction = new Transaction();
-
     $transaction->clientId = isset($_GET['clientId']) ? $_GET['clientId'] : die();
 
-    if($transaction->creditCard['cardHolderName'] == null){
+    //boleto or credit card
+    if($transaction->payment = ["type" => "boleto"]){
         //boleto
         $transaction->findBoletoPayment(); 
         
@@ -51,9 +51,9 @@
 
 
 
-    } else {
+    } elseif ($transaction->payment = ["type" => "credit card"]) {
         //new Credit Card Payment
-        $transaction = new Transaction();
+        // $transaction = new Transaction();
     
         // $transaction->clientId = isset($_GET['clientId']) ? $_GET['clientId'] : die();
         $transaction->findCreditCardPayment(); 
@@ -89,6 +89,10 @@
         }
 
 
+    } else {
+        echo json_encode(
+            array('message'=> 'No payment found')
+        );
     }
     
 
